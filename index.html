@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Language Selection - Team Curio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #1a73e8;
+      --primary-dark: #0d47a1;
+      --primary-light: #e8f0fe;
+      --safe: #34a853;
+      --warning: #f9ab00;
+      --danger: #ea4335;
+      --dark: #202124;
+      --dark-gray: #5f6368;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+      --radius: 12px;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--dark);
+      padding: 20px;
+    }
+    
+    .launcher-container {
+      background: white;
+      border-radius: var(--radius);
+      padding: 40px;
+      box-shadow: var(--shadow-lg);
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+    }
+    
+    .launcher-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    
+    .launcher-logo-icon {
+      background: var(--primary);
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+    
+    .launcher-logo-icon i {
+      font-size: 2rem;
+    }
+    
+    .launcher-logo-text h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    .launcher-logo-text span {
+      font-size: 0.95rem;
+      color: var(--dark-gray);
+    }
+    
+    .launcher-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--dark);
+    }
+    
+    .launcher-subtitle {
+      font-size: 1rem;
+      color: var(--dark-gray);
+      margin-bottom: 30px;
+    }
+    
+    .language-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+    
+    .language-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 15px 10px;
+      border: 2px solid #dadce0;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+    
+    .language-btn:hover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+    }
+    
+    .language-btn.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .language-flag {
+      font-size: 2.5rem;
+    }
+    
+    .language-name {
+      font-size: 0.85rem;
+    }
+    
+    .launcher-button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px 40px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .launcher-button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .launcher-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    .fallback-link {
+      display: block;
+      margin-top: 20px;
+      color: var(--dark-gray);
+      font-size: 0.9rem;
+    }
+    
+    .fallback-link a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    
+    @media (max-width: 600px) {
+      .launcher-container { padding: 25px; }
+      .language-grid { grid-template-columns: repeat(2, 1fr); }
+      .launcher-title { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="launcher-container">
+    <div class="launcher-logo">
+      <div class="launcher-logo-icon">
+        <i class="fas fa-heartbeat"></i>
+      </div>
+      <div class="launcher-logo-text">
+        <h1>Team Curio</h1>
+        <span>Smart Community Health Monitoring</span>
+      </div>
+    </div>
+    
+    <h2 class="launcher-title">Choose Your Language</h2>
+    <p class="launcher-subtitle">Select your preferred language to continue</p>
+    
+    <div class="language-grid" id="language-grid">
+      <!-- Will be populated by JavaScript -->
+    </div>
+    
+    <button class="launcher-button" id="continue-btn" disabled>
+      <i class="fas fa-arrow-right"></i> Continue to App
+    </button>
+    
+    <div class="fallback-link">
+      If you're not redirected automatically, <a href="javascript:redirectToApp()">click here</a> to continue.
+    </div>
+  </div>
+  
+  <script>
+    const languages = [
+      { code: 'en', name: 'English', flag: '🌐' },
+      { code: 'as', name: 'Assamese', flag: '🇮🇳' },
+      { code: 'bn', name: 'Bengali', flag: '🇧🇩' },
+      { code: 'mni', name: 'Manipuri', flag: 'ꯃ' },
+      { code: 'brx', name: 'Bodo', flag: '🌿' },
+      { code: 'miz', name: 'Mizo', flag: '🏔️' },
+      { code: 'nag', name: 'Naga', flag: '⛰️' },
+      { code: 'kha', name: 'Khasi', flag: '🌄' },
+      { code: 'grt', name: 'Garo', flag: '🌲' },
+      { code: 'trp', name: 'Kokborok', flag: '🌅' },
+      { code: 'njz', name: 'Nepali', flag: '🇳🇵' },
+      { code: 'lus', name: 'Mishing', flag: '🌊' }
+    ];
+    
+    let selectedLang = null;
+    const languageGrid = document.getElementById('language-grid');
+    const continueBtn = document.getElementById('continue-btn');
+    
+    // Initialize language buttons
+    languages.forEach(lang => {
+      const btn = document.createElement('button');
+      btn.className = 'language-btn';
+      btn.setAttribute('data-lang', lang.code);
+      btn.innerHTML = `
+        <div class="language-flag">${lang.flag}</div>
+        <div class="language-name">${lang.name}</div>
+      `;
+      
+      btn.addEventListener('click', () => {
+        // Deselect all
+        document.querySelectorAll('.language-btn').forEach(b => b.classList.remove('selected'));
+        // Select clicked
+        btn.classList.add('selected');
+        selectedLang = lang.code;
+        continueBtn.disabled = false;
+      });
+      
+      languageGrid.appendChild(btn);
+    });
+    
+    // Continue button
+    continueBtn.addEventListener('click', redirectToApp);
+    
+    function redirectToApp() {
+      if (!selectedLang) selectedLang = 'en';
+      try {
+        localStorage.setItem('appLang', selectedLang);
+        localStorage.setItem('entryFrom', 'languagePage');
+      } catch(e) {}
+      window.location.href = 'Final.html';
+    }
+    
+    // Auto-select first language (English) on load
+    const firstBtn = document.querySelector('.language-btn');
+    if (firstBtn) {
+      firstBtn.classList.add('selected');
+      selectedLang = firstBtn.getAttribute('data-lang');
+      continueBtn.disabled = false;
+    }
+  </script>
+</body>
+</html>
